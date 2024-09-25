@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_2
+    environment:
+      POSTGRES_DB: idea_bot_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+
+  app:
+    build: .
+    container_name: app-idea-bot
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/idea_bot_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+    depends_on:
+      - postgres
+    ports:
+      - "888:888"
+    restart: always
+
+volumes:
+  postgres-data:
