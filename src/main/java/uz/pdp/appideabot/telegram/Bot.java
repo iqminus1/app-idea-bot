@@ -1,4 +1,4 @@
-package uz.pdp.appideabot.service.telegram;
+package uz.pdp.appideabot.telegram;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -6,12 +6,16 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import uz.pdp.appideabot.service.ProcessService;
 import uz.pdp.appideabot.utils.AppConstants;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
-    public Bot() {
+    private final ProcessService processService;
+
+    public Bot(ProcessService processService) {
         super(new DefaultBotOptions(), AppConstants.BOT_TOKEN);
+        this.processService = processService;
         try {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
             api.registerBot(this);
@@ -22,7 +26,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update);
+        processService.process(update);
     }
 
     @Override
