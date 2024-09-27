@@ -6,16 +6,15 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import uz.pdp.appideabot.service.ProcessService;
 import uz.pdp.appideabot.utils.AppConstants;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
-    private final ProcessService processService;
+    private final BotProcess botProcess;
 
-    public Bot(ProcessService processService) {
+    public Bot(BotProcess processService) {
         super(new DefaultBotOptions(), AppConstants.BOT_TOKEN);
-        this.processService = processService;
+        this.botProcess = processService;
         try {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
             api.registerBot(this);
@@ -26,7 +25,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        processService.process(update);
+        botProcess.process(update);
     }
 
     @Override

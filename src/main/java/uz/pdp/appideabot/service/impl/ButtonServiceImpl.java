@@ -14,6 +14,7 @@ import uz.pdp.appideabot.service.LangService;
 import uz.pdp.appideabot.utils.CommonUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +98,13 @@ public class ButtonServiceImpl implements ButtonService {
 
     @Override
     public ReplyKeyboard start(Long userId) {
-        return null;
+        List<String> list = new LinkedList<>();
+
+        list.add(langService.getMessage(LangFields.JOIN_WITH_CODE_TEXT, userId));
+        list.add(langService.getMessage(LangFields.MY_PROJECTS_TEXT, userId));
+        list.add(langService.getMessage(LangFields.BUTTON_LANG_SETTINGS, userId));
+
+        return withString(list);
     }
 
 }
