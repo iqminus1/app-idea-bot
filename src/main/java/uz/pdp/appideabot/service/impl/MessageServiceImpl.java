@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import uz.pdp.appideabot.enums.Lang;
 import uz.pdp.appideabot.enums.LangFields;
+import uz.pdp.appideabot.enums.State;
 import uz.pdp.appideabot.model.User;
 import uz.pdp.appideabot.service.ButtonService;
 import uz.pdp.appideabot.service.LangService;
@@ -36,9 +38,50 @@ public class MessageServiceImpl implements MessageService {
                 }
                 if (text.equals("/start")) {
                     start(userId);
+                    return;
+                }
+                switch (user.getState()) {
+                    case START -> {
+                        if (text.equals(langService.getMessage(LangFields.JOIN_WITH_CODE_TEXT, userId))) {
+                            joinViaCode(userId);
+                        } else if (text.equals(langService.getMessage(LangFields.MY_PROJECTS_TEXT, userId))) {
+                            myProjects(userId);
+                        } else if (text.equals(langService.getMessage(LangFields.BUTTON_LANG_SETTINGS, userId))) {
+                            sendLanguages(userId);
+                        }
+                    }
+                    case SELECTING_LANGUAGE -> {
+                        setLanguage(userId, text);
+                    }
                 }
             }
         }
+    }
+
+    private void setLanguage(Long userId, String text) {
+        Lang lang = langService.getLanguageEnum(text);
+        User user = utils.getUser(userId);
+        user.setState(State.START);
+        String message = langService.getMessage(LangFields.EXCEPTION_LANGUAGE, userId);
+        if (lang != null) {
+            user.setLang(lang);
+            message = langService.getMessage(LangFields.SUCCESSFULLY_SELECTED_LANGUAGE, userId);
+        }
+        sender.sendMessage(userId, message, buttonService.start(userId));
+    }
+
+    private void sendLanguages(Long userId) {
+        User user = utils.getUser(userId);
+        user.setState(State.SELECTING_LANGUAGE);
+        sender.sendMessage(userId, langService.getMessage(LangFields.SELECT_LANGUAGE_TEXT, userId), buttonService.language(userId));
+    }
+
+    private void myProjects(Long userId) {
+
+    }
+
+    private void joinViaCode(Long userId) {
+
     }
 
     private void selectLanguage(Long userId) {
@@ -55,6 +98,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void start(Long userId) {
-
+        User user = utils.getUser(userId);
+        user.setState(State.START);
+        sender.sendMessage(userId, langService.getMessage(LangFields.START_TEXT, userId), buttonService.start(userId));
     }
 }
