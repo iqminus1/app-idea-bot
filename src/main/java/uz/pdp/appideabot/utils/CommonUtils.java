@@ -1,5 +1,6 @@
 package uz.pdp.appideabot.utils;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -46,6 +47,12 @@ public class CommonUtils {
     public void saveUsers() {
         List<User> list = users.values().stream().toList();
         userRepository.saveAll(list);
+        users.clear();
+    }
+
+    @PreDestroy
+    public void preDestroyUsers() {
+        userRepository.saveAll(users.values());
         users.clear();
     }
 }
