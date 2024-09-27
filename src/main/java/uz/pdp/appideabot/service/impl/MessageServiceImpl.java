@@ -43,13 +43,13 @@ public class MessageServiceImpl implements MessageService {
 
     private void selectLanguage(Long userId) {
         String text = langService.getMessage(LangFields.CHOICE_LANGUAGE_TEXT, "uz");
-        String uz = langService.getMessage(LangFields.BUTTON_LANGUAGE_UZ, "uz");
-        String ru = langService.getMessage(LangFields.BUTTON_LANGUAGE_RU, "ru");
-        String en = langService.getMessage(LangFields.BUTTON_LANGUAGE_EN, "en");
+        String uz = langService.getMessage(LangFields.BUTTON_LANGUAGE_UZ, "UZ");
+        String ru = langService.getMessage(LangFields.BUTTON_LANGUAGE_RU, "RU");
+        String en = langService.getMessage(LangFields.BUTTON_LANGUAGE_EN, "EN");
         LinkedHashMap<String, String> textData = new LinkedHashMap<>();
-        textData.put(uz, AppConstants.LANG_DATA + "uz");
-        textData.put(ru, AppConstants.LANG_DATA + "ru");
-        textData.put(en, AppConstants.LANG_DATA + "en");
+        textData.put(uz, AppConstants.LANG_DATA + "UZ");
+        textData.put(ru, AppConstants.LANG_DATA + "RU");
+        textData.put(en, AppConstants.LANG_DATA + "EN");
         InlineKeyboardMarkup markup = buttonService.callbackKeyboard(textData);
         sender.sendMessage(userId, text, markup);
     }

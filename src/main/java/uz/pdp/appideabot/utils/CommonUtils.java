@@ -25,6 +25,7 @@ public class CommonUtils {
                         userRepository.save(User.builder()
                                 .id(userId)
                                 .expire(LocalDateTime.now().minusDays(3))
+                                .state(State.START)
                                 .prime(false)
                                 .build())));
     }
